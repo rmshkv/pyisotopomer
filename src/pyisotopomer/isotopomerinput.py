@@ -26,6 +26,8 @@ class IsotopomerInput:
         :type R: string
         :param tabname: name of tab containing size-corrected isotope ratios (default: "size_correction")
         :type R: string
+        :param datadf: dataframe for input in same format as spreadsheet template
+        :type datadf: Pandas DataFrame
 
     OUTPUT:
         :returns: self.data, self.sizecorrected, self.ratiosscrambling
@@ -35,6 +37,9 @@ class IsotopomerInput:
 
     def __init__(self, filename=None, tabname=None, datadf=None):
 
+        if (filename is not None) and (datadf is not None):
+            raise ValueError("Both input file and dataframe provided")
+        
         if filename is not None:
             
             self.filename = filename

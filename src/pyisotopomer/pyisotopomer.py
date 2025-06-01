@@ -41,6 +41,10 @@ class Scrambling:
         :param **Refs: Reference materials included in input spreadsheet:
         e.g., ref1="NAME", ref2="NAME", ref3="NAME"
         :type **Refs: Variadic kwargs
+        :param inputdf: Input as a dataframe
+        :type inputdf: Pandas DataFrame
+        :param refdf: Reference material info in dataframe
+        :type refdf: Pandas DataFrame
         :param saveout: If True, save output .xlsx file of scrambling results.
         :type saveout: Bool
         :param outputfile: Output filename. If None and saveout=True, default to
@@ -130,10 +134,13 @@ class Scrambling:
 
         # Adding option to input dataframe directly:
 
-        if isinstance(inputfile, str):
+        if (inputfile is not None) and (inputdf is not None):
+            raise ValueError("Both input file and input dataframe provided")
+        
+        if inputfile is not None:
             self.inputobj = ScramblingInput(filename=inputfile, isotopestandards=self.IsotopeStandards, **Refs)
 
-        elif isinstance(inputdf, pd.DataFrame):
+        elif inputdf is not None:
             self.inputobj = ScramblingInput(datadf=inputdf, refdf=refdf, 
                                             isotopestandards=self.IsotopeStandards, **Refs)
 

@@ -30,6 +30,10 @@ class ScramblingInput:
     INPUT:
         :param filename: filename for spreadsheet template, e.g. "00_excel_template.xlsx"
         :type R: string
+        :param datadf: dataframe for input in same format as spreadsheet template
+        :type datadfdf: Pandas DataFrame
+        :param refdf: Reference material info in dataframe
+        :type refdf: Pandas DataFrame
         :param isotopestandards: IsotopeStandards class from isotopestandards.py,
         containing 15RAir, 18RVSMOW, 17RVSMOW, and beta for the 18O/17O relation.
         :type isotopestandards: Class
@@ -46,6 +50,9 @@ class ScramblingInput:
 
     def __init__(self, filename=None, datadf=None, refdf=None, isotopestandards=None, **Refs):
 
+        if (filename is not None) and (datadf is not None):
+            raise ValueError("Both input file and dataframe provided")
+        
         if filename is not None:
         
             self.filename = filename
