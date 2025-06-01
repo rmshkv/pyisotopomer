@@ -30,6 +30,10 @@ class ScramblingInput:
     INPUT:
         :param filename: filename for spreadsheet template, e.g. "00_excel_template.xlsx"
         :type R: string
+        :param datadf: dataframe for input in same format as spreadsheet template
+        :type datadfdf: Pandas DataFrame
+        :param refdf: Reference material info in dataframe
+        :type refdf: Pandas DataFrame
         :param isotopestandards: IsotopeStandards class from isotopestandards.py,
         containing 15RAir, 18RVSMOW, 17RVSMOW, and beta for the 18O/17O relation.
         :type isotopestandards: Class
@@ -44,26 +48,38 @@ class ScramblingInput:
     @author: Colette L. Kelly (clkelly@stanford.edu).
     """
 
-    def __init__(self, filename, isotopestandards, **Refs):
+    def __init__(self, filename=None, datadf=None, refdf=None, isotopestandards=None, **Refs):
 
-        self.filename = filename
-
-        try:
-            # full contents of excel template, first tab
-            self.data = self.readin(self.filename)
-        except FileNotFoundError:
-            if self.filename[-5:] != ".xlsx":
-                self.filename = self.filename + ".xlsx"
+        if (filename is not None) and (datadf is not None):
+            raise ValueError("Both input file and dataframe provided")
+        
+        if filename is not None:
+        
+            self.filename = filename
+    
+            try:
+                # full contents of excel template, first tab
                 self.data = self.readin(self.filename)
+            except FileNotFoundError:
+                if self.filename[-5:] != ".xlsx":
+                    self.filename = self.filename + ".xlsx"
+                    self.data = self.readin(self.filename)
+    
+            # read in d15Na and d15Nb of reference materials from excel template
+            self.isotopeconstants = pd.read_excel(
+                filename,
+                "scale_normalization",
+                skiprows=1,
+                usecols=["ref_tag", "d15Na", "d15Nb"],
+            )
 
-        # read in d15Na and d15Nb of reference materials from excel template
-        self.isotopeconstants = pd.read_excel(
-            filename,
-            "scale_normalization",
-            skiprows=1,
-            usecols=["ref_tag", "d15Na", "d15Nb"],
-        )
+        elif datadf is not None:
+            self.data = datadf.copy()
 
+            # insert checking for proper columns here
+
+            self.isotopeconstants = refdf[["ref_tag", "d15Na", "d15Nb"]]
+            
         # subset of data to be used for Isotopomers
         self.sizecorrected = self.parseratios(self.data)
 
