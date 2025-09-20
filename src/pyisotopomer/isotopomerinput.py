@@ -60,8 +60,6 @@ class IsotopomerInput:
         elif datadf is not None:
             self.data = datadf.copy()
 
-        # add in error handling so you can't pass in both filename and datadf
-
         # subset of data to be used for Isotopomers
         self.sizecorrected = self.parseratios(self.data)
 
