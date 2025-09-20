@@ -31,7 +31,7 @@ class ScramblingInput:
         :param filename: filename for spreadsheet template, e.g. "00_excel_template.xlsx"
         :type R: string
         :param datadf: dataframe for input in same format as spreadsheet template
-        :type datadfdf: Pandas DataFrame
+        :type datadf: Pandas DataFrame
         :param refdf: Reference material info in dataframe
         :type refdf: Pandas DataFrame
         :param isotopestandards: IsotopeStandards class from isotopestandards.py,
@@ -74,9 +74,45 @@ class ScramblingInput:
             )
 
         elif datadf is not None:
-            self.data = datadf.copy()
+            # Reading in data from a provided dataframe instead
 
-            # insert checking for proper columns here
+            data = datadf.copy()
+            data = data[
+                [
+                "run_date",
+                "ref_tag",
+                "Row",
+                "Identifier 1",
+                "Is Ref _",
+                "d 15N/14N",
+                "d 18O/16O",
+                "d 17O/16O",
+                "Area 44",
+                "Area 30",
+                "BGD 44",
+                "Rt",
+                "FileHeader: Filename",
+                "Time Code",
+                "rR 45N2O/44N2O sam",
+                "rR 46N2O/44N2O sam",
+                "rR 31NO/30NO sam",
+                "rR 45N2O/44N2O std",
+                "rR 46N2O/44N2O std",
+                "rR 31NO/30NO std",
+                "raw 45rR/45rR",
+                "raw 46rR/46rR",
+                "raw 31rR/31rR",
+                "size corrected 31rR/31rR",
+                "size corrected 45rR/45rR",
+                "size corrected 46rR/46rR",
+                "scale decompressed 45rR/45rR",
+                "scale decompressed 46rR/46rR",
+                "size corrected 31R",
+                "size corrected 45R",
+                "size corrected 46R",
+                "D17O"]]
+            
+            self.data = data
 
             self.isotopeconstants = refdf[["ref_tag", "d15Na", "d15Nb"]]
             

@@ -132,19 +132,17 @@ class Scrambling:
 
         self.outputfile = outputfile
 
-        # Adding option to input dataframe directly:
-
         if (inputfile is not None) and (inputdf is not None):
             raise ValueError("Both input file and input dataframe provided")
         
         if inputfile is not None:
             self.inputobj = ScramblingInput(filename=inputfile, isotopestandards=self.IsotopeStandards, **Refs)
 
+        # Adding option to input dataframe directly:
+
         elif inputdf is not None:
             self.inputobj = ScramblingInput(datadf=inputdf, refdf=refdf, 
                                             isotopestandards=self.IsotopeStandards, **Refs)
-
-        ### Add error handling for the above - can't have both inputfile and inputdf provided
 
         self.outputs, self.pairings, self.alloutputs = parseoutput(
             self.inputobj,
